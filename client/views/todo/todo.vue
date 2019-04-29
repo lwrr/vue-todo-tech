@@ -19,6 +19,10 @@
       @toggle="toggleFilter"
       @clearAllCompleted="clearAllCompleted"
     />
+    <router-link to="/app/test">test</router-link>
+    <transition name="fade">
+      <router-view />
+    </transition>
   </section>
 </template>
 
@@ -27,6 +31,21 @@ import Item from './item.vue'
 import Tabs from './tabs.vue'
 let id = 0
 export default {
+  beforeRouteEnter (to, from, next) {
+    console.log('todo before enter', this)
+    next(vm => console.log('vm.id', vm.id))
+  },
+  beforeRouteUpdate (to, from, next) {
+    console.log('todo before update')
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    console.log('todo before leave')
+    if (global.confirm('are you sure?')) {
+      next()
+    }
+  },
+  props: ['id'],
   data () {
     return {
       todos: [],
@@ -45,6 +64,9 @@ export default {
       const completed = this.filter === 'completed'
       return this.todos.filter(todo => completed === todo.completed)
     }
+  },
+  mounted () {
+    console.log('this.$route')
   },
   methods: {
     addTodo (e) {
